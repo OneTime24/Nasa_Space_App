@@ -31,6 +31,6 @@ All story copy and interactive facts live in `src/data/story.ts`. Sources are ma
 
 ## Credits
 
-Team credit: `TEAM STILL HERE / NASA SPACE APPS 2026`. Replace this line with the final participant names before submission.
+Team credit: `TEAM NORTH-SOUTH / MOHSIN ALI`.
 
 This is an independent educational project for NASA Space Apps. NASA source material is credited in the site and source list. The project is not endorsed by NASA.

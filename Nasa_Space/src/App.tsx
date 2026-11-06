@@ -53,7 +53,7 @@ function App() {
         <p className="credits-copy">These machines are heritage, science, and memory. This independent project was made for the NASA International Space Apps Challenge.</p>
         <div className="credits-actions"><button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Replay story ↗</button><button onClick={() => { if (navigator.share) navigator.share({ title: document.title, url: window.location.href }); else navigator.clipboard?.writeText(window.location.href); }}>Share this story ↗</button></div>
         <div className="source-list"><strong>Sources & credits</strong><a href="https://science.nasa.gov/moon/" target="_blank" rel="noreferrer">NASA Moon</a><a href="https://science.nasa.gov/mission/mer-opportunity/" target="_blank" rel="noreferrer">NASA Mars Exploration Rover: Opportunity</a><a href="https://science.nasa.gov/mission/insight/" target="_blank" rel="noreferrer">NASA InSight</a><a href="https://www.nasa.gov/mission_pages/LRO/news/apollo-sites.html" target="_blank" rel="noreferrer">NASA LRO Apollo sites</a></div>
-        <footer><span>TEAM STILL HERE / NASA SPACE APPS 2026</span><span>ABANDONED BUT NOT FORGOTTEN © 2026</span><span>NOT ENDORSED BY NASA</span></footer>
+        <footer><span>TEAM NORTH-SOUTH / MOHSIN ALI</span><span>ABANDONED BUT NOT FORGOTTEN © 2026</span><span>NOT ENDORSED BY NASA</span></footer>
       </section>
     </main>
   </div>;

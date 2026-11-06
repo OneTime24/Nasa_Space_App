@@ -5,4 +5,4 @@
 - Use browser Web Audio for optional ambient sound so no audio asset or autoplay permission is required.
 - Treat the Moon and Mars artifacts as heritage and scientific records, not as “space junk”.
 - Use NASA source links in every interactive fact and the final credits section.
-- Leave `[TEAM NAME] / [MEMBERS]` visible until the team supplies final credits.
+- Use the supplied final credit: Team North-South / Mohsin Ali.
