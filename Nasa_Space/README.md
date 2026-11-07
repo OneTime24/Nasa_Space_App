@@ -1,8 +1,8 @@
-# Abandoned but Not Forgotten
+# AFTERLIGHT
 
-An interactive story for the **NASA International Space Apps Challenge** challenge “Abandoned but Not Forgotten: Storytelling about NASA’s Discarded Equipment on the Moon and Mars.”
+An interactive planetary archive for the NASA International Space Apps Challenge theme “Abandoned but Not Forgotten.” AFTERLIGHT documents the machines, instruments and landing hardware humans left on the Moon and Mars.
 
-The experience is a five-act picture book narrated by the machines humans left behind. A child looking at the sky provides the emotional thread. Each act combines original CSS illustration, short first-person narration, a NASA fact, and a large tap/keyboard-friendly interaction.
+The application includes a cinematic landing experience, Moon/Mars explorer with draggable and zoomable planetary views, coordinate markers, a searchable artifact archive, mission timeline, educational learning zone and source-linked artifact profiles. The core dataset is strongly typed in `src/data/artifacts.ts` and powers every view.
 
 ## Run locally
 
@@ -21,13 +21,13 @@ npm run preview
 ## Stack
 
 - Vite, React, and TypeScript
-- Framer Motion for small, intentional entrance transitions
-- Original responsive CSS scene art; no fragile image dependency
-- Web Audio API ambient tone, started only after the visitor presses the sound control
+- Original responsive CSS planetary visualization with a lightweight WebGL-independent fallback
+- NASA Image and Video Library URLs where available, with CSS visual fallbacks for resilient loading
+- Hash-based navigation so deep links work on static hosting
 
 ## Story and data
 
-All story copy and interactive facts live in `src/data/story.ts`. Sources are mapped in [`docs/SOURCES.md`](docs/SOURCES.md). The reference design analysis and implementation decisions are in `docs/REFERENCE_ANALYSIS.md` and `docs/DECISIONS.md`.
+Artifact records, mission timelines, statuses, locations and references live in `src/data/artifacts.ts`. Source notes are mapped in [`docs/SOURCES.md`](docs/SOURCES.md).
 
 ## Credits
 

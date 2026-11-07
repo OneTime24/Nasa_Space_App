@@ -1,62 +1,71 @@
 import { useEffect, useState } from 'react';
-import { Act } from './components/Act';
-import { AudioToggle } from './components/AudioToggle';
-import { ProgressNav } from './components/ProgressNav';
-import { acts, type ActId } from './data/story';
+import { artifacts } from './data/artifacts';
 import './styles.css';
+
+type Chapter = {
+  id: string;
+  number: string;
+  title: string;
+  text: string;
+  fact: string;
+  label: string;
+  world: 'moon' | 'mars' | 'space';
+};
+
+const chapters: Chapter[] = [
+  { id: 'arrival', number: '01', title: 'We came to look closer.', text: 'Every machine began as a question: what is this world made of, and what can it teach us about our own?', fact: 'The Moon keeps a record of impacts and exploration because it has no thick atmosphere to erase the marks.', label: 'THE FIRST QUESTION', world: 'space' },
+  { id: 'moon', number: '02', title: 'Then we left weight behind.', text: 'A descent stage. A rover. A mirror that still catches a laser from Earth. The Moon keeps these things exactly where we placed them.', fact: 'Apollo astronauts used lunar rovers on Apollo 15, Apollo 16 and Apollo 17 to travel farther from their landing modules.', label: 'THE MOON / 384,400 KM', world: 'moon' },
+  { id: 'mars', number: '03', title: 'On Mars, silence arrived slowly.', text: 'Spirit became still in the soil. Opportunity waited through a planet-wide dust storm. InSight listened until its solar panels gathered too much dust.', fact: 'Opportunity worked for more than 14 years before a global dust storm ended communications in 2018.', label: 'MARS / 225 MILLION KM', world: 'mars' },
+  { id: 'record', number: '04', title: 'A quiet object can still teach us.', text: 'From orbit, our tracks are handwriting. Hardware, wheel paths and instruments become a record of how we learned to travel across another world.', fact: 'NASA’s Lunar Reconnaissance Orbiter has photographed Apollo landing sites and the equipment left below.', label: 'THE ORBITAL RECORD', world: 'space' },
+  { id: 'future', number: '05', title: 'The next story is ours to choose.', text: 'Exploration is not only arriving. It is choosing how to leave a place after you have learned from it.', fact: 'AFTERLIGHT distinguishes operational instruments, inactive machines and deliberately discarded landing hardware.', label: 'A PROMISE', world: 'moon' }
+];
 
 function App() {
   const [started, setStarted] = useState(false);
-  const [active, setActive] = useState<ActId>('I');
-  const [fact, setFact] = useState(0);
+  const [active, setActive] = useState(chapters[0].id);
+  const [selectedArtifact, setSelectedArtifact] = useState<string | null>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        setActive((entry.target.id.replace('act-', '') || 'I') as ActId);
-        setFact(0);
-      }
-    }), { threshold: .35 });
-    document.querySelectorAll('.act').forEach((section) => observer.observe(section));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setActive(entry.target.id.replace('step-', ''));
+      });
+    }, { threshold: 0.55 });
+    document.querySelectorAll('.story-step').forEach((step) => observer.observe(step));
     return () => observer.disconnect();
-  }, []);
+  }, [started]);
 
-  const goTo = (id: ActId) => {
-    setStarted(true);
-    document.querySelector(`#act-${id}`)?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const activeChapter = chapters.find((chapter) => chapter.id === active) ?? chapters[0];
+  const activeIndex = chapters.findIndex((chapter) => chapter.id === active);
+  const next = chapters[activeIndex + 1];
 
-  return <div className="app">
-    {!started && <div className="loading"><div className="loading-mark">✦</div><p>Preparing the field guide...</p></div>}
-    <header className="site-header">
-      <a href="#title" className="logo" onClick={() => setStarted(true)}><span>AB</span> ABANDONED<br />BUT NOT FORGOTTEN</a>
-      <div className="header-right"><AudioToggle /><span className="header-note">NASA SPACE APPS / 2026</span></div>
-    </header>
-    <ProgressNav active={active} onSelect={goTo} />
-    <main>
-      <section className="title-screen" id="title">
-        <div className="title-stars" />
-        <div className="title-copy">
-          <p className="eyebrow">An interactive story about what remains</p>
-          <h1>Abandoned<br /><em>but not</em><br />forgotten.</h1>
-          <p className="tagline">We left more than footprints.</p>
-          <button className="begin-button" onClick={() => { setStarted(true); document.querySelector('#act-I')?.scrollIntoView({ behavior: 'smooth' }); }}>Begin the story <span>→</span></button>
-          <p className="best-with">Best with sound. Scroll or tap to continue.</p>
-        </div>
-        <div className="title-planet"><div className="planet-moon" /><div className="tiny-orbit" /><span>THE MOON / 384,400 KM</span></div>
-        <div className="title-scroll">SCROLL TO EXPLORE <b>↓</b></div>
-      </section>
-      {acts.map((act, index) => <Act key={act.id} act={act} selectedFact={fact} onSelectFact={setFact} onNext={() => index < acts.length - 1 ? goTo(acts[index + 1].id) : document.querySelector('#credits')?.scrollIntoView({ behavior: 'smooth' })} />)}
-      <section className="credits" id="credits">
-        <p className="eyebrow">The end is another beginning</p>
-        <h2>Look up.<br /><em>Remember.</em></h2>
-        <p className="credits-copy">These machines are heritage, science, and memory. This independent project was made for the NASA International Space Apps Challenge.</p>
-        <div className="credits-actions"><button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Replay story ↗</button><button onClick={() => { if (navigator.share) navigator.share({ title: document.title, url: window.location.href }); else navigator.clipboard?.writeText(window.location.href); }}>Share this story ↗</button></div>
-        <div className="source-list"><strong>Sources & credits</strong><a href="https://science.nasa.gov/moon/" target="_blank" rel="noreferrer">NASA Moon</a><a href="https://science.nasa.gov/mission/mer-opportunity/" target="_blank" rel="noreferrer">NASA Mars Exploration Rover: Opportunity</a><a href="https://science.nasa.gov/mission/insight/" target="_blank" rel="noreferrer">NASA InSight</a><a href="https://www.nasa.gov/mission_pages/LRO/news/apollo-sites.html" target="_blank" rel="noreferrer">NASA LRO Apollo sites</a></div>
-        <footer><span>TEAM NORTH-SOUTH / MOHSIN ALI</span><span>ABANDONED BUT NOT FORGOTTEN © 2026</span><span>NOT ENDORSED BY NASA</span></footer>
-      </section>
+  return <div className={`afterlight ${started ? 'is-started' : ''}`}>
+    {!started && <Cover onStart={() => { setStarted(true); setTimeout(() => document.querySelector('#story')?.scrollIntoView({ behavior: 'smooth' }), 20); }} />}
+    <button className="nasa-badge" onClick={() => window.open('https://www.nasa.gov/', '_blank', 'noopener,noreferrer')} aria-label="Open NASA website"><span>NASA</span><small>MISSION<br />ARCHIVE</small></button>
+    <header className="story-header"><button className="wordmark" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>AFTERLIGHT <span>Every mission ends. Its story doesn't.</span></button><span>{activeChapter.number} / 05</span></header>
+    <div className="chapter-title">{activeChapter.title}</div>
+    <main id="story" className="story">
+      <div className={`fixed-scene scene-${activeChapter.world}`} aria-hidden="true"><div className="scene-stars" /><div className="scene-orbit orbit-a" /><div className="scene-orbit orbit-b" /><div className="scene-planet" /><div className="scene-horizon" /><div className="scene-object object-rover" /><div className="scene-object object-module" /><div className="scene-object object-helicopter" /><div className="scene-caption">{activeChapter.label}</div></div>
+      <div className="story-column">
+        <section className="story-intro"><span>AFTERLIGHT / A FIELD GUIDE</span><h1>What remains<br /><em>after the mission?</em></h1><p>Scroll to explore the machines humans left on the Moon and Mars.</p><span className="scroll-cue">SCROLL TO BEGIN ↓</span></section>
+        {chapters.map((chapter) => <section className="story-step" id={`step-${chapter.id}`} key={chapter.id}><div className="step-card"><span className="step-number">{chapter.number} / 05</span><h2>{chapter.title}</h2><p>{chapter.text}</p><div className="step-fact"><span>{chapter.label}</span><strong>{chapter.fact}</strong></div>{chapter.id === 'moon' && <button className="discover-button" onClick={() => setSelectedArtifact('apollo-15-lrv')}>Open the lunar archive ↗</button>}{chapter.id === 'mars' && <button className="discover-button" onClick={() => setSelectedArtifact('opportunity')}>Meet the quiet machines ↗</button>}</div></section>)}
+        <section className="story-end"><span>THE ARCHIVE CONTINUES</span><h2>Look up.<br /><em>Remember.</em></h2><p>Explore twelve verified starting points in the AFTERLIGHT collection.</p><button className="discover-button" onClick={() => setSelectedArtifact(artifacts[0].id)}>Open an artifact ↗</button><footer>TEAM NORTH-SOUTH / NASA SPACE APPS 2026 <span>NOT ENDORSED BY NASA</span></footer></section>
+      </div>
+      <div className="story-progress">{chapters.map((chapter) => <button key={chapter.id} className={chapter.id === active ? 'active' : ''} onClick={() => document.querySelector(`#step-${chapter.id}`)?.scrollIntoView({ behavior: 'smooth' })}>{chapter.number}</button>)}</div>
     </main>
+    {selectedArtifact && <ArtifactOverlay id={selectedArtifact} onClose={() => setSelectedArtifact(null)} />}
+    {next && <span className="next-hint">NEXT / {next.number} · {next.title}</span>}
   </div>;
+}
+
+function Cover({ onStart }: { onStart: () => void }) {
+  return <section className="cover"><div className="cover-noise" /><div className="cover-copy"><span className="cover-kicker">NASA SPACE APPS / 2026</span><h1>Every mission ends.<br /><em>Its story doesn't.</em></h1><p>Explore the things humanity left behind on the Moon and Mars.</p><button onClick={onStart}>BEGIN THE ARCHIVE <span>→</span></button><small>Best experienced by scrolling slowly.</small></div><div className="cover-moon" /><div className="cover-footer"><span>AFTERLIGHT</span><span>A DIGITAL MUSEUM OF WHAT REMAINS</span></div></section>;
+}
+
+function ArtifactOverlay({ id, onClose }: { id: string; onClose: () => void }) {
+  const artifact = artifacts.find((item) => item.id === id);
+  if (!artifact) return null;
+  return <div className="artifact-overlay"><article><button className="overlay-close" onClick={onClose}>×</button><span className="cover-kicker">{artifact.destination} / {artifact.status}</span><h2>{artifact.name}</h2><p className="overlay-lede">{artifact.reason}</p><div className="overlay-grid"><div><span>PURPOSE</span><p>{artifact.purpose}</p></div><div><span>SCIENCE</span><p>{artifact.science}</p></div><div><span>LOCATION</span><p>{artifact.location}</p></div><div><span>MISSION</span><p>{artifact.mission}</p></div></div><div className="overlay-sources">{artifact.references.map((reference) => <a href={reference.url} target="_blank" rel="noreferrer" key={reference.url}>{reference.label} ↗</a>)}</div></article></div>;
 }
 
 export default App;
